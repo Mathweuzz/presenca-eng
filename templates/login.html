@@ -1,0 +1,18 @@
+<!-- Código HTML para a página de login -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        <label for="registration">Matrícula:</label>
+        <input type="text" id="registration" name="registration" required><br><br>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>

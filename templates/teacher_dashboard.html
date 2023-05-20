@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard do Professor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher.css') }}">
+</head>
+<body>
+    <h2>Dashboard do Professor</h2>
+    
+    <h3>Aulas Criadas:</h3>
+    <ul>
+        {% for class in classes %}
+        <li>
+            Código da Aula: {{ class.code }}<br>
+            Nome da Aula: {{ class.name }}
+            <a href="{{ url_for('download_attendance', class_id=class.id) }}" class="btn-download">Download CSV</a>
+            
+            <form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn-delete">Deletar Aula</button>
+            </form>
+            
+        </li>
+        {% endfor %}
+    </ul>
+    
+    <h3>Criar Nova Aula:</h3>
+    <form action="/generate_class" method="POST">
+        <label for="class_name">Nome da Aula:</label>
+        <input type="text" id="class_name" name="class_name" required><br>
+        
+        <label for="class_date">Data da Aula:</label>
+        <input type="date" id="class_date" name="class_date" required><br>
+        
+        <button type="submit">Criar Aula</button>
+    </form>
+    
+    <a href="/logout">Sair</a>
+</body>
+</html>

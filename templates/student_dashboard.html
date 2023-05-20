@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard do Aluno</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='student.css') }}">
+</head>
+<body>
+    <h1>Bem-vindo, {{ user.name }}!</h1>
+    <h3>Marcar Presença</h3>
+    <form action="/mark_attendance" method="post">
+        <label for="class_code">Código da Aula:</label>
+        <input type="text" id="class_code" name="class_code" required><br><br>
+        <input type="submit" value="Enviar">
+    </form>
+
+    <h3>Aulas com Presença</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome da Aula</th>
+                <th>Data</th>
+                <th>Hora</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attended in attended_classes %}
+            <tr>
+                <td>{{ attended.class_obj.name }}</td>
+                <td>{{ attended.class_date }}</td>
+                <td>{{ attended.class_date.strftime('%H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    
+    
+    <br>
+    <a href="/logout">Sair</a>
+</body>
+</html>
