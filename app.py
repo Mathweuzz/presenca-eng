@@ -49,7 +49,7 @@ def home():
 def register():
     if request.method == 'POST':
         registration = request.form['registration']
-        name = request.form['name']  # Adicione esta linha para obter o nome do formulário
+        name = request.form['name']
         password = request.form['password']
         role = request.form['role']
         password_hash = hash_password(password)
@@ -86,7 +86,7 @@ def dashboard():
             attended_classes = user.attended_classes
             return render_template('student_dashboard.html', user=user, attended_classes=attended_classes)
         elif user.role == 'teacher':
-            classes = Class.query.filter_by(teacher_id=user_id).all()  # Obtém todas as aulas do professor
+            classes = Class.query.filter_by(teacher_id=user_id).all() 
             return render_template('teacher_dashboard.html', user=user, classes=classes)
     return redirect('/login')
 
