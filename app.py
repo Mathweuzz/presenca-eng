@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import joinedload
 from flask_migrate import Migrate
 from datetime import datetime
 import csv
@@ -12,11 +11,10 @@ from pytz import timezone
 app = Flask(__name__)
 db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['SECRET_KEY'] = 'chave_secreta'  # Defina sua chave secreta aqui
+app.config['SECRET_KEY'] = 'chave_secreta'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# Modelos de Banco de Dados
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     registration = db.Column(db.String(9), unique=True)
@@ -42,7 +40,6 @@ class Attendance(db.Model):
 
     def __repr__(self):
         return f"<Attendance {self.attendance_id}>"
-
 
 @app.route('/')
 def home():
@@ -77,10 +74,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    # Remover a sessão do usuário
     session.pop('user_id', None)
-
-    # Redirecionar para a página de login
     return redirect(url_for('login'))
 
 @app.route('/dashboard')
@@ -113,7 +107,7 @@ def generate_class():
         if user.role == 'teacher':
             class_code = generate_class_code()
             class_name = request.form['class_name']
-            new_class = Class(code=class_code, name=class_name, teacher_id=user_id)  # Associe o ID do professor à nova aula
+            new_class = Class(code=class_code, name=class_name, teacher_id=user_id)
             db.session.add(new_class)
             db.session.commit()
             return redirect('/dashboard')
@@ -128,8 +122,8 @@ def mark_attendance():
             class_code = request.form['class_code']
             class_obj = Class.query.filter_by(code=class_code).first()
             if class_obj:
-                attendance = Attendance(class_id=class_obj.id)  # Remova o argumento `user_id`
-                user.attended_classes.append(attendance)  # Associe o aluno à instância de Attendance
+                attendance = Attendance(class_id=class_obj.id)
+                user.attended_classes.append(attendance)
                 db.session.commit()
                 return redirect('/dashboard')
     return redirect('/login')
@@ -145,13 +139,13 @@ def download_attendance(class_id):
 
             students = User.query.join(Attendance.students).filter(Attendance.class_id == class_id).order_by(User.name).all()
             
-            brasil_timezone = timezone('America/Sao_Paulo')  # Define o fuso horário do Brasil
+            brasil_timezone = timezone('America/Sao_Paulo')
 
             for student in students:
                 registro = student.registration
                 nome = student.name
-                data_presenca = attendance.class_date.astimezone(brasil_timezone).strftime('%Y-%m-%d')  # Converte para o fuso horário do Brasil
-                hora_presenca = attendance.class_date.astimezone(brasil_timezone).strftime('%H:%M:%S')  # Converte para o fuso horário do Brasil
+                data_presenca = attendance.class_date.astimezone(brasil_timezone).strftime('%Y-%m-%d')
+                hora_presenca = attendance.class_date.astimezone(brasil_timezone).strftime('%H:%M:%S')
                 attendance_data.append([registro, nome, data_presenca, hora_presenca])
 
             with open(filename, 'w', newline='') as file:
@@ -166,31 +160,26 @@ def download_attendance(class_id):
 def delete_class(class_id):
     class_obj = Class.query.get(class_id)
     if class_obj:
-        # Deleta os registros de presença associados à aula
         Attendance.query.filter_by(class_id=class_id).delete()
-
-        # Deleta a aula
         db.session.delete(class_obj)
         db.session.commit()
 
     return redirect('/dashboard')
 
-
-
 def hash_password(password):
-    password = password.encode('utf-8')  # Codifica a senha como bytes
-    salt = bcrypt.gensalt()  # Gera um salt aleatório
+    password = password.encode('utf-8')
+    salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password, salt)
-    return hashed_password.decode('utf-8')  # Decodifica o hash de volta para string
+    return hashed_password.decode('utf-8')
 
 def check_password(hashed_password, user_password):
-    hashed_password = hashed_password.encode('utf-8')  # Codifica o hash como bytes
-    user_password = user_password.encode('utf-8')  # Codifica a senha como bytes
+    hashed_password = hashed_password.encode('utf-8')
+    user_password = user_password.encode('utf-8')
     return bcrypt.checkpw(user_password, hashed_password)
 
 def generate_class_code():
-    class_code = secrets.randbelow(10000)  # Gera um código aleatório de 4 dígitos
-    return str(class_code).zfill(4)  # Preenche o código com zeros à esquerda, se necessário
+    class_code = secrets.randbelow(10000)
+    return str(class_code).zfill(4)
 
 if __name__ == '__main__':
     with app.app_context():
