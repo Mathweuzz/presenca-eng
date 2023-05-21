@@ -43,3 +43,52 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #45a049;
 }
+
+.container {
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 200px;
+}
+
+.container input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.container input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}

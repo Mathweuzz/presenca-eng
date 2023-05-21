@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for, send_file
+from flask import Flask, render_template, request, redirect, session, url_for, send_file, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
@@ -29,6 +29,7 @@ class Class(db.Model):
     code = db.Column(db.String(4), unique=True)
     name = db.Column(db.String(100))
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    class_date = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Attendance(db.Model):
     attendance_id = db.Column(db.Integer, primary_key=True)
@@ -51,13 +52,21 @@ def register():
         registration = request.form['registration']
         name = request.form['name']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
         role = request.form['role']
+
+        if password != confirm_password:
+            flash('As senhas não coincidem. Por favor, tente novamente.', 'error')
+            return redirect('/register')
+
         password_hash = hash_password(password)
         user = User(registration=registration, name=name, password_hash=password_hash, role=role)
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
     return render_template('register.html')
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -96,7 +105,8 @@ def class_attendance(class_id):
     if class_obj:
         attendance = Attendance.query.filter_by(class_id=class_id).order_by(Attendance.class_date.desc()).first()
         if attendance:
-            return render_template('class_attendance.html', class_obj=class_obj, attendance=attendance)
+            students = User.query.join(Attendance.students).filter(Attendance.class_id == class_id).order_by(User.name).all()
+            return render_template('class_attendance.html', class_obj=class_obj, attendance=attendance, students=students)
     return redirect('/dashboard')
 
 @app.route('/generate_class', methods=['POST'])
@@ -107,7 +117,8 @@ def generate_class():
         if user.role == 'teacher':
             class_code = generate_class_code()
             class_name = request.form['class_name']
-            new_class = Class(code=class_code, name=class_name, teacher_id=user_id)
+            class_date = datetime.strptime(request.form['class_date'], '%Y-%m-%d').date()
+            new_class = Class(code=class_code, name=class_name, class_date=class_date, teacher_id=user_id)
             db.session.add(new_class)
             db.session.commit()
             return redirect('/dashboard')
@@ -165,6 +176,7 @@ def delete_class(class_id):
         db.session.commit()
 
     return redirect('/dashboard')
+
 
 def hash_password(password):
     password = password.encode('utf-8')
