@@ -7,6 +7,7 @@ import os
 import bcrypt
 import secrets
 from pytz import timezone
+import telebot
 
 app = Flask(__name__)
 db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'database.db')
@@ -192,6 +193,34 @@ def check_password(hashed_password, user_password):
 def generate_class_code():
     class_code = secrets.randbelow(10000)
     return str(class_code).zfill(4)
+
+CHAVE_API = "6068870354:AAFMTccO1tu34vYIc8pgJM4DfhCVq0pgaeo"
+
+bot = telebot.TeleBot(CHAVE_API)
+
+def verificar(mensagem):
+    if mensagem != '/start':
+        return True
+
+@bot.message_handler(func=verificar)
+def alunos_command(mensagem):
+    with app.app_context():
+        classe_codigo = mensagem.text
+        classe = Class.query.filter_by(code=classe_codigo).first()
+        if classe_codigo == "/start":
+            resposta = "Olá! Bem-vindo ao bot. Por favor, insira o código da aula para verificar os alunos presentes."
+            bot.reply_to(mensagem, resposta)
+        else:
+            if classe:
+                alunos_presentes = User.query.join(Attendance.students).filter(Attendance.class_id == classe.id).all()
+                alunos_presentes = sorted(alunos_presentes, key=lambda x: x.name.lower())
+                resposta = f"Alunos presentes na aula {classe_codigo}:\n"
+                for aluno in alunos_presentes:
+                    resposta += f"- {aluno.name}\n"
+                bot.reply_to(mensagem, resposta)
+            else:
+                bot.reply_to(mensagem, f"Aula {classe_codigo} não encontrada.")
+bot.polling()
 
 if __name__ == '__main__':
     with app.app_context():
