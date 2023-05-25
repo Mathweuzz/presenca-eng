@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background-image: linear-gradient(aliceblue, skyblue);
+  background-image: linear-gradient(aliceblue, rgb(29, 88, 160));
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -68,7 +68,7 @@ a {
   display: block;
   margin-top: 30px;
   text-align: center;
-  color: #007bff;
+  color: black;
 }
 
 a:hover {
