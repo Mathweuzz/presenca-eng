@@ -19,7 +19,6 @@ body {
 
 .dashboard {
   height: 65%;
-  overflow-y: scroll;
 }
 
 .create {
