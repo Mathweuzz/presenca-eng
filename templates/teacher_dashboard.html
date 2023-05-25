@@ -37,22 +37,23 @@
     </script>
 </head>
 <body>
+    <div class="dashboard">
     <h2>Dashboard do Professor</h2>
     
     <h3>Aulas Criadas:</h3>
     <ul>
         {% for class in classes %}
-        <li>
+        <li class="aula">
             Código da Aula: {{ class.code }}<br>
             Nome da Aula: {{ class.name }}<br>
             Data da Aula: {{ class.class_date.strftime('%Y-%m-%d') }}<br>
             Número de Alunos: {{ class.attendances|length }}
-            <a href="{{ url_for('download_attendance', class_id=class.id) }}" class="btn-download">Download CSV</a><br>
+            <a href="{{ url_for('download_attendance', class_id=class.id) }}" class="btn-download btn">Download CSV</a><br>
             
-            <button onclick="openStudentsPopup({{ class.id }})" class="btn-students">Alunos</button><br><br>
+            <button onclick="openStudentsPopup({{ class.id }})" class="btn-students btn">Alunos</button><br><br>
             
             <form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn-delete">Deletar Aula</button>
+                <button type="submit" class="btn-delete btn">Deletar Aula</button>
             </form>
             
             <div id="popup-{{ class.id }}" class="popup-container">
@@ -62,21 +63,22 @@
                         <h3>Alunos Presentes</h3>
                     </div>
                     <div class="popup-body">
-                        <ul>
+                        <ul class="alunos">
                             {% for attendance in class.attendances %}
-                            <li>{{ attendance.students.name }}</li>
+                            <li class="aluno">{{ attendance.students.name }}</li>
                             {% endfor %}
                         </ul>
                     </div>
                     <div class="popup-footer">
-                        <button onclick="closeStudentsPopup({{ class.id }})">Fechar</button>
+                        <button class="btn-fechar btn" onclick="closeStudentsPopup({{ class.id }})">Fechar</button>
                     </div>
                 </div>
             </div>
         </li>
         {% endfor %}
     </ul>
-    
+    </div>
+    <div class="create">
     <h3>Criar Nova Aula:</h3>
     <form action="/generate_class" method="POST">
         <label for="class_name">Nome da Aula:</label>
@@ -89,5 +91,6 @@
     </form>
     
     <a href="/logout">Sair</a>
+</div>
 </body>
 </html>

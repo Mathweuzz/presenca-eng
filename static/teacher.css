@@ -1,23 +1,39 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
+  background-image: linear-gradient(aliceblue, skyblue);
   margin: 0;
   padding: 0;
   display: flex;
+  align-items: center;
+  height: 100vh;
+  justify-content: space-around;
+}
+
+.dashboard,
+.create {
+  display: flex;
   flex-direction: column;
   align-items: center;
+  justify-items: center;
+}
+
+.dashboard {
+  height: 65%;
+  overflow-y: scroll;
+}
+
+.create {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 2rem;
 }
 
 h2 {
-  margin-top: 50px;
   text-align: center;
 }
 
-h3 {
-  margin-top: 30px;
-}
-
 ul {
+  overflow-y: scroll;
   list-style-type: none;
   padding: 0;
   margin-top: 20px;
@@ -26,13 +42,36 @@ ul {
   align-items: center;
 }
 
-li {
+.aluno {
   background-color: #fff;
   padding: 10px;
   margin-bottom: 10px;
   width: 400px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.aula {
+  border-radius: 2rem;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  border-radius: 3rem;
+  cursor: pointer;
+}
+
+.btn-fechar {
+  color: #fff;
+  background-color: gray;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 3px;
 }
 
 .btn-download {
@@ -56,7 +95,6 @@ form {
 
 label {
   display: block;
-  margin-bottom: 5px;
 }
 
 input[type="text"],
@@ -118,11 +156,11 @@ a:hover {
 }
 
 .popup-container.open {
-  opacity: 1;
+  opacity: 0.7;
 }
 
 .popup-overlay.open {
-  opacity: 1;
+  opacity: 0.7;
 }
 
 .btn-students {
