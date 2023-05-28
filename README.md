@@ -29,19 +29,27 @@ Certifique-se de ter as seguintes dependências instaladas:
 
 1. Clone o repositório do projeto:
 
+```shell
 git clone https://github.com/seu-usuario/sistema-presenca.git
+```
 
 2. Navegue até o diretório do projeto:
 
+```shell
 cd sistema-presenca
+```
 
 3. Instale as dependências:
 
+```shell
 pip install -r requirements.txt
+```
 
 4. Execute o aplicativo:
 
+```shell
 python app.py
+```
 
 5. Acesse a aplicação em seu navegador web:
 
